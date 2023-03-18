@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ahmad.bookrental.BookRental;
+import com.ahmad.bookrental.BookRentalDTO;
 import com.ahmad.bookrental.BookRentalService;
+import com.ahmad.bookrental.BookRentingRequest;
 import com.ahmad.config.JWTService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -108,12 +110,12 @@ if (jwtService.isAuthTokenValid(JWT, userDetails)){
     }
 
     @GetMapping("/usersbooks")
-    public List<BookRental> getBooksByUser(HttpServletRequest httpRequest) {
+    public List<BookRentalDTO> getBooksByUser(HttpServletRequest httpRequest) {
         return bookRentalService.getBooksByUser(httpRequest);
     }
 
     @GetMapping("/userslogs")
-    public List<BookRental> getAllRentals(@RequestHeader("Authorization") String authHeader ) {
+    public List<BookRentalDTO> getAllRentals(@RequestHeader("Authorization") String authHeader ) {
         String JWT = authHeader.substring(7);
         String email = jwtService.getEmailFromToken(JWT);
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);

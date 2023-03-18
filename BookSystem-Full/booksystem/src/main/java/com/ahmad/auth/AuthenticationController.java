@@ -30,20 +30,34 @@ public class AuthenticationController {
     private final LogoutService logoutService;
 
 
-    // Authentication URL
+    
+    /**
+     * Controller which calls authentication function in Authentication Service
+     * @param request
+     * @return ResponseEntity
+     */
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request){
         return ResponseEntity.ok(service.authenticate(request));
 
     }
 
-    // Registration URL for Users
+    
+    /**
+     * Controller which calls register function in Authentication Service
+     * @param request
+     * @return ResponseEntity
+     */
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request){
         return ResponseEntity.ok(service.register(request));
     }
 
-    // Logout URL
+       /**
+     * Controller which calls logout function in Authentication Service
+     * @param request
+     * @return ResponseEntity
+     */
     @PostMapping("/logout")
     public String logout( @RequestHeader("Authorization") String authHeader ){
         // console.log("Logging out");
@@ -52,7 +66,11 @@ public class AuthenticationController {
     }
 
 
-    // Registration URL for Admins
+       /**
+     * Controller which calls admin register function in Authentication Service
+     * @param request
+     * @return ResponseEntity
+     */
     @PostMapping("/register/admin")
     public ResponseEntity<AuthenticationResponse> registerAdmin(@RequestBody RegisterRequest request){
         return ResponseEntity.ok(service.registerAdmin(request));

@@ -1,5 +1,8 @@
 package com.ahmad.auth;
 
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ahmad.config.JWTService;
+import com.ahmad.exception.UserAlreadyExistsException;
+import com.ahmad.exception.UserDoesNotExistException;
 import com.ahmad.token.Token;
 import com.ahmad.token.TokenRepository;
 import com.ahmad.token.TokenType;
@@ -41,8 +46,15 @@ public class AuthenticationService {
 
     
     // Register a new user
+    /**
+     * @param request
+     * @return
+     */
     public AuthenticationResponse register(RegisterRequest request) {
-        // init new user object 
+        Optional<Users> existingUser = userRepo.findByEmail(request.getEmail());
+        if (existingUser.isPresent()) {
+            throw new UserAlreadyExistsException("A user with the email " + request.getEmail() + " already exists.");
+        }
         var user = Users.builder().firstName(request.getFirstname())
         .lastName(request.getLastname())
         .email(request.getEmail())
@@ -60,9 +72,16 @@ public class AuthenticationService {
     }
 
 
+    /**
+     * Saves token with assosciated user to database
+     * 
+     * @param savedUser
+     * @param JWTtoken
+     * @return void
+     * 
+     * 
+     */
     private void savetoUserToken(Users savedUser, String JWTtoken) {
-
-        // init token object
         var token = Token.builder()
         .user(savedUser)
         .token(JWTtoken)
@@ -74,8 +93,18 @@ public class AuthenticationService {
     }
 
 
-// Admin registration
+
+    /**
+     * Registers admins only. 
+     * @param request
+     * @return AuthenticationResponse
+     * 
+     */
     public AuthenticationResponse registerAdmin(RegisterRequest request) {
+        Optional<Users> existingUser = userRepo.findByEmail(request.getEmail());
+        if (existingUser.isPresent()) {
+            throw new UserAlreadyExistsException("A user with the email " + request.getEmail() + " already exists.");
+        }
         var user = Users.builder().firstName(request.getFirstname())
         .lastName(request.getLastname())
         .email(request.getEmail())
@@ -89,22 +118,34 @@ public class AuthenticationService {
         
     }
 
-    // Authenticate user
+    
+    /**
+     * Service to authenticate which checks if user does not exist then if exists authenticates
+     * @param request
+     * @return AuthenticationResponse Object 
+     * 
+     */
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        Optional<Users> existingUser = userRepo.findByEmail(request.getEmail());
+        if (!(existingUser.isPresent())) {
+            throw new UserDoesNotExistException(request.getEmail() + " does not exist.");
+        }
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user = userRepo.findByEmail(request.getEmail()).orElseThrow();
         var token = jwtService.generateToken(user);
         removeUserTokens(user);
         savetoUserToken(user, token);
         return AuthenticationResponse.builder().token(token).build();
-
-
-        
+    
     }
 
     
 
-    // Remove user tokens
+
+    /**
+     * Sets User's tokens to revoked and expired when called
+     * @param user
+     */
     private void removeUserTokens(Users user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
         if (validUserTokens.isEmpty())

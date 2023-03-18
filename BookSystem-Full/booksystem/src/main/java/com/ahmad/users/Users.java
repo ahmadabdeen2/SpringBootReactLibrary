@@ -14,7 +14,7 @@ import com.ahmad.books.Books;
 // import com.ahmad.books.Books;
 import com.ahmad.token.Token;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -56,7 +56,7 @@ public class Users implements UserDetails {
 
 
 
-    @JsonManagedReference
+    // @JsonIgnoreProperties({"user"})
     @OneToMany(mappedBy = "user")
     private List<BookRental> rentals = new ArrayList<>();
     
