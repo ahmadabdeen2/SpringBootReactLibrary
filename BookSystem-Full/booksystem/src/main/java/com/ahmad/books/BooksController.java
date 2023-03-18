@@ -109,21 +109,5 @@ if (jwtService.isAuthTokenValid(JWT, userDetails)){
         return "Book not returned";
     }
 
-    @GetMapping("/usersbooks")
-    public List<BookRentalDTO> getBooksByUser(HttpServletRequest httpRequest) {
-        return bookRentalService.getBooksByUser(httpRequest);
-    }
 
-    @GetMapping("/userslogs")
-    public List<BookRentalDTO> getAllRentals(@RequestHeader("Authorization") String authHeader ) {
-        String JWT = authHeader.substring(7);
-        String email = jwtService.getEmailFromToken(JWT);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        boolean valid = userDetails.getAuthorities().toString().contains("ADMIN");
-
-        if (jwtService.isAuthTokenValid(JWT, userDetails) && valid){
-                return bookRentalService.getAllLogs();
-        }
-        return null;
-    }
 }

@@ -28,7 +28,7 @@ public class BooksService {
     JWTService jwtService;
 
     public Books addBook(BookAdditionRequest request) {
-        var book = Books.builder().title(request.getTitle())
+        Books book = Books.builder().title(request.getTitle())
         .isbn(request.getIsbn())
         .author(request.getAuthor())
         .quantity(request.getQuantity())
@@ -36,7 +36,7 @@ public class BooksService {
         .imageURL(request.getImageURL())
         .pdfURL(request.getPdfURL())
         .build();
-        var savedBook = booksRepo.save(book);
+        Books savedBook = booksRepo.save(book);
         return  savedBook;
     }
 

@@ -3,6 +3,7 @@ package com.ahmad.bookrental;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import com.ahmad.users.UsersRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
-import lombok.var;
+
 
 @Service
 public class BookRentalService {
@@ -36,17 +37,12 @@ public class BookRentalService {
     BookRentalRepository bookRentalRepo;
 
     
-
-    // rent a new book
     @Transactional
     public String rentBook(@RequestBody BookRentingRequest request, HttpServletRequest httpRequest) {
-
-        // get book and user from db
         Books bookFound = booksRepo.findById(request.getBook_id()).orElseThrow();
         String token = httpRequest.getHeader("Authorization");
         token = token.substring(7);
-        System.out.println(token);
-        var userind = jwtService.getEmailFromToken(token);
+        String userind = jwtService.getEmailFromToken(token);
         Users userFound = userRepo.findByEmail(userind).orElseThrow();
         int quantity = bookFound.getQuantity();
         if (quantity == 0){
@@ -64,14 +60,14 @@ public class BookRentalService {
         }
         
         
-        var userFromToken = jwtService.getEmailFromToken(token);
+        String userFromToken = jwtService.getEmailFromToken(token);
         if (userFromToken.equals(userFound.getEmail())) {
-            var newBookRental = BookRental.builder()
+            BookRental newBookRental = BookRental.builder()
             .book(bookFound)
             .user(userFound)
             .rentalDate(new Date(System.currentTimeMillis()))
             .build();
-            var savedBookRental = bookRentalRepo.save(newBookRental);
+            BookRental savedBookRental = bookRentalRepo.save(newBookRental);
             bookFound.setQuantity(quantity - 1);
         }
         return "Book rented";
@@ -79,14 +75,14 @@ public class BookRentalService {
 
     @Transactional
     public void returnBook(@RequestBody BookRentingRequest request, HttpServletRequest httpRequest) {
-        var bookFound = booksRepo.findById(request.getBook_id()).orElseThrow();
+        Books bookFound = booksRepo.findById(request.getBook_id()).orElseThrow();
         String token = httpRequest.getHeader("Authorization");
         token = token.substring(7);
-        var userind = jwtService.getEmailFromToken(token);
-        var userFound = userRepo.findByEmail(userind).orElseThrow();
-        var userFromToken = jwtService.getEmailFromToken(token);
+        String userind = jwtService.getEmailFromToken(token);
+        Users userFound = userRepo.findByEmail(userind).orElseThrow();
+        String userFromToken = jwtService.getEmailFromToken(token);
         if (userFromToken.equals(userFound.getEmail())) {
-            var bookRentalFound = bookRentalRepo.findByUserAndBookAndReturned(  userFound, bookFound, false).orElseThrow();
+            BookRental bookRentalFound = bookRentalRepo.findByUserAndBookAndReturned(  userFound, bookFound, false).orElseThrow();
             bookRentalFound.setReturnDate(new Date(System.currentTimeMillis()));
             bookRentalFound.setReturned(true);
             bookFound.setQuantity(bookFound.getQuantity() + 1);
@@ -100,10 +96,10 @@ public class BookRentalService {
 
 
     public List<BookRentalDTO> getBooksByUser(HttpServletRequest httpRequest) {
-        var token = httpRequest.getHeader("Authorization");
+        String token = httpRequest.getHeader("Authorization");
         token = token.substring(7);
-        var userFromToken = jwtService.getEmailFromToken(token);
-        var user = userRepo.findByEmail(userFromToken).orElseThrow();
+        String userFromToken = jwtService.getEmailFromToken(token);
+        Users user = userRepo.findByEmail(userFromToken).orElseThrow();
         Long userId = Long.valueOf(user.getId());
         // var bookRentals = bookRentalRepo.findAllWithBooksAndUsers();
         // return bookRentals
@@ -121,7 +117,7 @@ public class BookRentalService {
 
 
     public List<BookRentalDTO> getAllLogs() {
-        var bookRentals = bookRentalRepo.findAll();
+        List<BookRental> bookRentals = bookRentalRepo.findAll();
         List<BookRentalDTO> bookRentalDTOs = new ArrayList<>();
         for (BookRental bookRental : bookRentals) {
             bookRentalDTOs.add(convertToDTO(bookRental));
@@ -136,7 +132,7 @@ public class BookRentalService {
         dto.setReturnDate(bookRental.getReturnDate());
         dto.setReturned(bookRental.isReturned());
     
-        var bookDTO = new BooksDTO();
+        BooksDTO bookDTO = new BooksDTO();
         bookDTO.setId(bookRental.getBook().getId());
         bookDTO.setTitle(bookRental.getBook().getTitle());
         bookDTO.setImageURL(bookRental.getBook().getImageURL());

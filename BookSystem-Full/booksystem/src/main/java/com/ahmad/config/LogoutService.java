@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
 
+import com.ahmad.token.Token;
 import com.ahmad.token.TokenRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +32,7 @@ public class LogoutService implements LogoutHandler {
         }
         JWT = header.substring(7);
         System.out.println("Called here");
-        var Storedtoken = tokenRepository.findByToken(JWT).orElse(null);
+        Token Storedtoken = tokenRepository.findByToken(JWT).orElse(null);
         if (Storedtoken != null){
             System.out.println("found");
             Storedtoken.setExpired(true);
@@ -47,7 +48,7 @@ public class LogoutService implements LogoutHandler {
         final String header = authHeader;
         final String JWT = header.substring(7);   
         
-        var Storedtoken = tokenRepository.findByToken(JWT).orElse(null);
+        Token Storedtoken = tokenRepository.findByToken(JWT).orElse(null);
         if (Storedtoken != null){
             System.out.println("found");
             Storedtoken.setExpired(true);

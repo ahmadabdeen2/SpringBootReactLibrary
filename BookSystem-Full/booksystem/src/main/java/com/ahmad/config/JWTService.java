@@ -50,7 +50,7 @@ public class JWTService {
     }
 
     private boolean isTokenRevoked(String token) {
-        var Storedtoken = tokenRepository.findByToken(token).orElse(null);
+        Token Storedtoken = tokenRepository.findByToken(token).orElse(null);
         if (Storedtoken != null) {
             return Storedtoken.isRevoked();
         }
