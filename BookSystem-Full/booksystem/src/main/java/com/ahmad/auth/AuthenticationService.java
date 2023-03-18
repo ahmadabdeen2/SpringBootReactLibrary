@@ -66,7 +66,7 @@ public class AuthenticationService {
         // save user to database
         Users savedUser = userRepo.save(user);
         // generate token
-        Token token = jwtService.generateToken(user);
+        String token = jwtService.generateToken(user);
         // save token to database
         savetoUserToken(savedUser, token);
         return AuthenticationResponse.builder().token(token).build();
@@ -114,7 +114,7 @@ public class AuthenticationService {
         .role(Role.ADMIN)
         .build();
         Users savedUser = userRepo.save(user);
-        Token token = jwtService.generateToken(user);
+        String token = jwtService.generateToken(user);
         savetoUserToken(savedUser, token);
         return AuthenticationResponse.builder().token(token).build();
         
