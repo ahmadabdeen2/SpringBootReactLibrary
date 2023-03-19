@@ -1,8 +1,10 @@
 package com.ahmad.books;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -45,9 +47,29 @@ public class BooksController {
     BooksRepository booksRepo;
 
     @GetMapping("/api/v1/books")
-    public Iterable<Books> getBooks() {
-        return booksRepo.findAll();
-    }
+
+    public ResponseEntity<List<BooksDTO>> getBooks() {
+        List<Books> books = booksRepo.findAll();
+        List<BooksDTO> booksDTOs = books.stream()
+                .map(this::convertToBooksDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(booksDTOs);
+        }
+
+        private BooksDTO convertToBooksDTO(Books book) {
+            return BooksDTO.builder()
+                    .id(book.getId())
+                    .title(book.getTitle())
+                    .imageURL(book.getImageURL())
+                    .author(book.getAuthor())
+                    .quantity(book.getQuantity())
+                    .description(book.getDescription())
+                    .pdfURL(book.getPdfURL())
+                    .isbn(book.getIsbn())
+                    
+                    .build();
+        }
+        
     @PostMapping("/admin/add")
     public String addBook(@RequestBody BookAdditionRequest request, @RequestHeader("Authorization") String authHeader){
         String JWT = authHeader.substring(7);

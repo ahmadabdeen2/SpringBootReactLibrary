@@ -57,17 +57,15 @@ public class AuthenticationService {
         if (existingUser.isPresent()) {
             throw new UserAlreadyExistsException("A user with the email " + request.getEmail() + " already exists.");
         }
+        
         Users user = Users.builder().firstName(request.getFirstname())
         .lastName(request.getLastname())
         .email(request.getEmail())
         .password(passwordEncoder.encode(request.getPassword()))
         .role(Role.USER)
         .build();
-        // save user to database
         Users savedUser = userRepo.save(user);
-        // generate token
         String token = jwtService.generateToken(user);
-        // save token to database
         savetoUserToken(savedUser, token);
         return AuthenticationResponse.builder().token(token).build();
         
@@ -130,10 +128,12 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         Optional<Users> existingUser = userRepo.findByEmail(request.getEmail());
         if (!(existingUser.isPresent())) {
-            throw new UserDoesNotExistException(request.getEmail() + " does not exist.");
+            throw new UserDoesNotExistException("Email or Password mismatch.");
         }
+
+
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        Users user = userRepo.findByEmail(request.getEmail()).orElseThrow();
+        Users user = existingUser.get();
         String token = jwtService.generateToken(user);
         removeUserTokens(user);
         savetoUserToken(user, token);

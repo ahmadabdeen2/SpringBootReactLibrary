@@ -13,5 +13,9 @@ public class BooksDTO {
     private Long id;
     private String title;
     private String imageURL;
-    
+    private String author;
+    private String isbn;
+    private String description;
+    private int quantity;
+    private String pdfURL;
 }

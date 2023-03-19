@@ -16,7 +16,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<?> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    public ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UserDoesNotExistException.class)
+    public ResponseEntity<Object> handleUserDoesNotExist(UserDoesNotExistException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 }

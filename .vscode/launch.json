@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-BooksystemApplication<booksystem>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.ahmad.booksystem.BooksystemApplication",
+            "projectName": "booksystem",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

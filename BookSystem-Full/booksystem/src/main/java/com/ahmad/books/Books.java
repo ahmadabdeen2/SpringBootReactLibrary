@@ -6,6 +6,7 @@ import java.util.List;
 import com.ahmad.bookrental.BookRental;
 import com.ahmad.users.Users;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -41,6 +42,7 @@ public class Books{
 
 
     @OneToMany(mappedBy = "book")
+    @JsonManagedReference
     private List<BookRental> rentals = new ArrayList<>();
 
 

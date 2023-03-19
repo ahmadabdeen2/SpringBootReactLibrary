@@ -5,7 +5,7 @@ public class UserDoesNotExistException extends RuntimeException{
      * Exception for user not exist
      * 
      * @param message
-     * @return 409
+     * @return
      */
     public UserDoesNotExistException(String message) {
         super(message);

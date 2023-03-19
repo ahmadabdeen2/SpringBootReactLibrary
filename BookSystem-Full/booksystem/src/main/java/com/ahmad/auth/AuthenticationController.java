@@ -60,7 +60,6 @@ public class AuthenticationController {
      */
     @PostMapping("/logout")
     public String logout( @RequestHeader("Authorization") String authHeader ){
-        // console.log("Logging out");
         logoutService.CustomLogout(authHeader);
         return "Logged Out";
     }
