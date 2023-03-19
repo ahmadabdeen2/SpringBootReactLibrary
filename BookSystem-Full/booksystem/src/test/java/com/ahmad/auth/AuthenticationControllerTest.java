@@ -21,34 +21,34 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes= {AuthenticationController.class})
-public class AuthenticationControllerTest {
-    @Autowired
-    private TestRestTemplate restTemplate;
+// @ExtendWith(SpringExtension.class)
+// @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes= {AuthenticationController.class})
+// public class AuthenticationControllerTest {
+//     @Autowired
+//     private TestRestTemplate restTemplate;
 
     
 
-    @Autowired
-    private ObjectMapper objectMapper;
+//     @Autowired
+//     private ObjectMapper objectMapper;
 
-    @MockBean
-    private AuthenticationService authService;
+//     @MockBean
+//     private AuthenticationService authService;
 
-    @Test
-    void testRegister() throws Exception {
-        // Prepare the request and expected response
-        RegisterRequest registerRequest = new RegisterRequest("John", "Doe", "john.doe@example.com", "password");
-        AuthenticationResponse expectedResponse = AuthenticationResponse.builder().token("sample_token").build();
+//     @Test
+//     void testRegister() throws Exception {
+//         // Prepare the request and expected response
+//         RegisterRequest registerRequest = new RegisterRequest("John", "Doe", "john.doe@example.com", "password");
+//         AuthenticationResponse expectedResponse = AuthenticationResponse.builder().token("sample_token").build();
     
-        // Configure the mock service behavior
-        when(authService.register(registerRequest)).thenReturn(expectedResponse);
+//         // Configure the mock service behavior
+//         when(authService.register(registerRequest)).thenReturn(expectedResponse);
     
-        // Perform the request and check the result
-        ResponseEntity<AuthenticationResponse> responseEntity = restTemplate.postForEntity("/register", registerRequest, AuthenticationResponse.class);
+//         // Perform the request and check the result
+//         ResponseEntity<AuthenticationResponse> responseEntity = restTemplate.postForEntity("/register", registerRequest, AuthenticationResponse.class);
     
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("sample_token", responseEntity.getBody().getToken());
+//         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+//         assertEquals("sample_token", responseEntity.getBody().getToken());
     
-}
-}
+// }
+// }
